@@ -1,0 +1,27 @@
+<RCC>
+    <qresource prefix="/">
+        <file>res/background.png</file>
+        <file>res/Buff/weak_power.png</file>
+        <file>res/Card/bash-ironclad.png</file>
+        <file>res/Card/defend-ironclad.png</file>
+        <file>res/Card/strike-ironclad.png</file>
+        <file>res/Entity/ironclad.png</file>
+        <file>res/Entity/nibbit.png</file>
+        <file>res/Buff/vulnerable_power.png</file>
+        <file>res/Buff/strength_power.png</file>
+        <file>res/intent/attack/intent_attack_1.png</file>
+        <file>res/intent/attack/intent_attack_2.png</file>
+        <file>res/intent/attack/intent_attack_3.png</file>
+        <file>res/intent/attack/intent_attack_4.png</file>
+        <file>res/intent/attack/intent_attack_5.png</file>
+        <file>res/intent/buff/intent_buff.png</file>
+        <file>res/intent/buff/intent_megadebuff.png</file>
+        <file>res/intent/defend/intent_defend.png</file>
+        <file>res/intent/heal/intent_heal.png</file>
+        <file>res/otherIcon/ironclad_energy_icon.png</file>
+        <file>res/combat_ui/discard_pile.png</file>
+        <file>res/combat_ui/draw_pile.png</file>
+        <file>res/combat_ui/end_turn_button.png</file>
+        <file>res/combat_ui/exhaust_pile.png</file>
+    </qresource>
+</RCC>
