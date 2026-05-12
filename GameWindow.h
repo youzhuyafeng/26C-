@@ -7,7 +7,7 @@
 #include <QVector>
 #include <QGraphicsPixmapItem>
 #include <QGraphicsSimpleTextItem>
-#include <QObject>   // 重要
+#include <QObject>
 #include "Card.h"
 
 class GameController;
@@ -16,7 +16,7 @@ class CardItem;
 
 class EndTurnButton : public QObject, public QGraphicsPixmapItem
 {
-    Q_OBJECT   // 必须加
+    Q_OBJECT 
 public:
     explicit EndTurnButton(const QPixmap& pixmap, QGraphicsItem* parent = nullptr);
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
@@ -58,4 +58,4 @@ private:
     EndTurnButton* m_endTurnBtn;
 };
 
-#endif // GAMEWINDOW_H
+#endif

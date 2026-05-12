@@ -11,6 +11,8 @@
 #include "Entity.h"
 #include "Card.h"
 
+class GameController;
+
 class CharacterItem : public QGraphicsObject
 {
     Q_OBJECT
@@ -24,6 +26,7 @@ public:
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
 
     void updateData();
+    void refreshIntent(GameController* gc); 
 
 signals:
     void cardDropped(Card* card);
@@ -34,7 +37,7 @@ protected:
     void dropEvent(QGraphicsSceneDragDropEvent* event) override;
 
 private:
-    void updateIntentIcons();
+    void updateIntentIcons(GameController* gc = nullptr);
 
     Entity* m_entity;
     QString m_name;
@@ -43,8 +46,8 @@ private:
     QPixmap m_weakIcon, m_vulnerableIcon, m_strengthIcon;
 
     QVector<QGraphicsPixmapItem*> m_intentIcons;
-    QVector<QGraphicsSimpleTextItem*> m_intentTexts;  // 对应攻击图标的伤害数值文本
+    QVector<QGraphicsSimpleTextItem*> m_intentTexts;
     bool m_isEnemy;
 };
 
-#endif // CHARACTERITEM_H
+#endif

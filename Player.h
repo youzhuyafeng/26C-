@@ -1,5 +1,4 @@
 #pragma once
-// ==================== Player.h ====================
 #ifndef PLAYER_H
 #define PLAYER_H
 
@@ -8,7 +7,6 @@
 class Player : public Entity {
 public:
     Player();
-
     int energy() const { return m_energy; }
     int maxEnergy() const { return m_maxEnergy; }
     void setEnergy(int e) { m_energy = e; }
@@ -19,4 +17,4 @@ private:
     int m_maxEnergy;
 };
 
-#endif // PLAYER_H
+#endif

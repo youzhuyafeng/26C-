@@ -16,7 +16,7 @@ public:
     QString description() const { return m_description; }
 
     virtual void play(GameController* gc) = 0;
-    virtual QString getImagePath() const = 0; // 新增：获取卡牌图片路径
+    virtual QString getImagePath() const = 0; 
 
 protected:
     QString m_name;
@@ -24,7 +24,7 @@ protected:
     QString m_description;
 };
 
-// 具体卡牌
+
 class StrikeCard : public Card {
 public:
     StrikeCard();
@@ -46,4 +46,4 @@ public:
     QString getImagePath() const override;
 };
 
-#endif // CARD_H
+#endif

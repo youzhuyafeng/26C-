@@ -1,5 +1,4 @@
 #pragma once
-// ==================== Entity.h ====================
 #ifndef ENTITY_H
 #define ENTITY_H
 
@@ -23,7 +22,6 @@ public:
     void addBuff(Buff::Type type, int amount);
     void tickBuffs(); // 回合结束时减少层数并移除0层的（仅易伤/脆弱）
 
-    // 计算本实体对目标造成的最终伤害
     int calculateDamage(int baseDamage, const Entity* target) const;
     void clearBlock() { m_block = 0; }
 
@@ -33,4 +31,4 @@ protected:
     QVector<Buff> m_buffs;
 };
 
-#endif // ENTITY_H
+#endif

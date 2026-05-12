@@ -25,7 +25,7 @@ private:
     Card* m_card;
     QPointF m_dragStartPos;
     bool m_dragging;
-    QPixmap m_cardPixmap;  // ¿¨ÅÆÍ¼Æ¬
+    QPixmap m_cardPixmap;
 };
 
-#endif // CARDITEM_H
+#endif

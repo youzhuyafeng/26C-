@@ -10,7 +10,6 @@
 #include <QFont>
 #include <QGraphicsSceneMouseEvent>
 
-// ---------- EndTurnButton 实现 ----------
 EndTurnButton::EndTurnButton(const QPixmap& pixmap, QGraphicsItem* parent)
     : QGraphicsPixmapItem(pixmap, parent)
 {
@@ -26,7 +25,6 @@ void EndTurnButton::mousePressEvent(QGraphicsSceneMouseEvent* event)
     QGraphicsPixmapItem::mousePressEvent(event);
 }
 
-// ---------- GameWindow 实现 ----------
 GameWindow::GameWindow(QWidget* parent)
     : QMainWindow(parent), m_controller(new GameController(this)), m_isDragging(false),
     m_energyIcon(nullptr), m_energyText(nullptr), m_endTurnBtn(nullptr)
@@ -55,7 +53,6 @@ void GameWindow::setupScene()
     m_scene->setSceneRect(0, 0, 1200, 800);
     m_view->setScene(m_scene);
 
-    // 背景图片
     QPixmap bgPixmap(":res/background.png");
     if (!bgPixmap.isNull()) {
         QPixmap scaledBg = bgPixmap.scaled(1200, 800, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
@@ -68,13 +65,11 @@ void GameWindow::setupScene()
         m_scene->setBackgroundBrush(QBrush(gradient));
     }
 
-    // 玩家（铁甲战士）
     m_playerItem = new CharacterItem(m_controller->player(), "铁甲战士",
         ":res/Entity/ironclad.png", QSize(180, 270));
     m_playerItem->setPos(200, 250);
     m_scene->addItem(m_playerItem);
 
-    // 怪物（颚虫）
     m_enemyItem = new CharacterItem(m_controller->enemy(), "哈气",
         ":res/Entity/nibbit.png", QSize(200, 100));
     m_enemyItem->setPos(800, 420);
@@ -82,37 +77,30 @@ void GameWindow::setupScene()
 
     connect(m_enemyItem, &CharacterItem::cardDropped, this, &GameWindow::onCardDroppedOnEnemy);
 
-    // ========== 新增：结束回合按钮（图片+文字） ==========
     QPixmap endBtnPixmap(":res/combat_ui/end_turn_button.png");
     if (endBtnPixmap.isNull()) {
         qWarning() << "Failed to load end button image: res/combat_ui/end_turn_button.png";
-        // 备用：创建一个灰色矩形
         endBtnPixmap = QPixmap(300, 100);
         endBtnPixmap.fill(Qt::gray);
     }
     else {
-        // 缩放到合适大小，例如 120x40
         endBtnPixmap = endBtnPixmap.scaled(300, 100, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     }
     m_endTurnBtn = new EndTurnButton(endBtnPixmap);
-    // 位置：手牌右侧，X = 1000，Y = 580（与手牌同一水平线）
     m_endTurnBtn->setPos(1000, 580);
     m_scene->addItem(m_endTurnBtn);
     connect(m_endTurnBtn, &EndTurnButton::clicked, this, &GameWindow::onEndTurnClicked);
 
-    // 在按钮图片上添加“结束回合”文字
     QGraphicsSimpleTextItem* btnText = new QGraphicsSimpleTextItem("结束回合", m_endTurnBtn);
     QFont btnFont("微软雅黑", 12, QFont::Bold);
     btnText->setFont(btnFont);
     btnText->setBrush(Qt::white);
-    // 文字居中在按钮图片内
     QRectF btnRect = m_endTurnBtn->boundingRect();
     QRectF textRect = btnText->boundingRect();
     btnText->setPos((btnRect.width() - textRect.width()) / 2,
         (btnRect.height() - textRect.height()) / 2);
-    btnText->setZValue(1);  // 确保文字在图片上方
+    btnText->setZValue(1);
 
-    // ========== 能量显示UI ==========
     QPixmap energyPixmap(":res/otherIcon/ironclad_energy_icon.png");
     if (energyPixmap.isNull()) {
         qWarning() << "Failed to load energy icon: res/otherIcon/ironclad_energy_icon.png";
@@ -136,7 +124,6 @@ void GameWindow::setupScene()
 
 void GameWindow::refreshHand()
 {
-    // 拖拽过程中也允许刷新，保证卡牌及时消失
     for (CardItem* item : m_handItems) {
         m_scene->removeItem(item);
         delete item;
@@ -179,7 +166,9 @@ void GameWindow::updateUI()
     m_enemyItem->updateData();
     refreshHand();
 
-    // 更新能量显示
+    // 刷新敌人意图（每次界面刷新都会重新计算力量加成后的伤害）
+    m_enemyItem->refreshIntent(m_controller);
+
     if (m_energyText && m_controller->player()) {
         Player* player = m_controller->player();
         QString energyStr = QString("%1/%2").arg(player->energy()).arg(player->maxEnergy());

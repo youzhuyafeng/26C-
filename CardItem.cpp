@@ -13,7 +13,6 @@ CardItem::CardItem(Card* card, QGraphicsItem* parent)
 {
     setAcceptHoverEvents(true);
     setCursor(Qt::OpenHandCursor);
-    // 加载卡牌图片
     QString imgPath = card->getImagePath();
     if (!m_cardPixmap.load(imgPath))
         qWarning() << "Failed to load card image:" << imgPath;
@@ -28,7 +27,6 @@ void CardItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget
 {
     painter->save();
     if (!m_cardPixmap.isNull())
-        // 使用 QRectF 版本
         painter->drawPixmap(QRect(0, 0, 130, 160), m_cardPixmap);
     else {
         painter->setBrush(QColor(240, 240, 220));
@@ -52,7 +50,6 @@ void CardItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
 void CardItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
     if (m_dragging && (event->pos() - m_dragStartPos).manhattanLength() > QApplication::startDragDistance()) {
-        // 用 QPointer 保护 this
         QPointer<CardItem> self(this);
 
         GameWindow* win = qobject_cast<GameWindow*>(scene()->views().first()->window());
@@ -75,7 +72,6 @@ void CardItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 
         if (win) win->setDragging(false);
 
-        // 若对象已在拖拽过程中被删除，则直接返回
         if (self.isNull()) return;
 
         m_dragging = false;

@@ -22,7 +22,6 @@ CharacterItem::CharacterItem(Entity* entity, const QString& name, const QString&
 
     if (dynamic_cast<Enemy*>(entity)) {
         m_isEnemy = true;
-        // 预创建最多3组图标和文本（足够覆盖攻击+防御+增益）
         for (int i = 0; i < 3; ++i) {
             QGraphicsPixmapItem* icon = new QGraphicsPixmapItem(this);
             icon->setVisible(false);
@@ -36,7 +35,7 @@ CharacterItem::CharacterItem(Entity* entity, const QString& name, const QString&
             text->setBrush(Qt::white);
             m_intentTexts.append(text);
         }
-        updateIntentIcons();
+        updateIntentIcons(nullptr);
     }
 
     updateData();
@@ -44,7 +43,6 @@ CharacterItem::CharacterItem(Entity* entity, const QString& name, const QString&
 
 CharacterItem::~CharacterItem()
 {
-    // 子对象自动删除
 }
 
 QRectF CharacterItem::boundingRect() const
@@ -117,11 +115,18 @@ void CharacterItem::updateData()
 {
     update();
     if (m_isEnemy) {
-        updateIntentIcons();
+        updateIntentIcons(nullptr);
     }
 }
 
-void CharacterItem::updateIntentIcons()
+void CharacterItem::refreshIntent(GameController* gc)
+{
+    if (m_isEnemy) {
+        updateIntentIcons(gc);
+    }
+}
+
+void CharacterItem::updateIntentIcons(GameController* gc)
 {
     if (!m_isEnemy) return;
     Enemy* enemy = dynamic_cast<Enemy*>(m_entity);
@@ -131,8 +136,19 @@ void CharacterItem::updateIntentIcons()
     struct IconInfo { QString path; int damage; bool isAttack; };
     QVector<IconInfo> infos;
 
+    int finalDamage = intent.damage;
+    if (gc && intent.damage > 0) {
+        // 计算力量加成后的实际伤害（供意图显示）
+        int strength = 0;
+        for (const Buff& b : enemy->buffs()) {
+            if (b.type == Buff::Strength) strength = b.amount;
+        }
+        finalDamage += strength;
+        // 注意：不在此处乘以玩家易伤/虚弱，意图只显示力量加成后的基础值
+    }
+
     if (intent.damage > 0) {
-        int dmg = intent.damage;
+        int dmg = finalDamage;
         QString attackPath;
         if (dmg < 5) attackPath = "res/intent/attack/intent_attack_1.png";
         else if (dmg < 15) attackPath = "res/intent/attack/intent_attack_2.png";
@@ -171,10 +187,8 @@ void CharacterItem::updateIntentIcons()
             iconItem->setPos(x, y);
             iconItem->setVisible(true);
 
-            // 处理攻击数值文本
             if (info.isAttack) {
                 textItem->setText(QString::number(info.damage));
-                // 文本居中：位于图标正下方
                 QRectF textRect = textItem->boundingRect();
                 qreal textX = x + (scaled.width() - textRect.width()) / 2;
                 qreal textY = y + scaled.height() + 2;
@@ -191,7 +205,6 @@ void CharacterItem::updateIntentIcons()
             textItem->setVisible(false);
         }
     }
-    // 隐藏多余的图标和文本
     for (int i = infos.size(); i < m_intentIcons.size(); ++i) {
         m_intentIcons[i]->setVisible(false);
         m_intentTexts[i]->setVisible(false);

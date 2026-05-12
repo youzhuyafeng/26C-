@@ -1,5 +1,4 @@
 #pragma once
-// ==================== Buff.h ====================
 #ifndef BUFF_H
 #define BUFF_H
 
@@ -11,4 +10,4 @@ struct Buff {
     Buff(Type t, int amt) : type(t), amount(amt) {}
 };
 
-#endif // BUFF_H
+#endif
